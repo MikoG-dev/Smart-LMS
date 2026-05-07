@@ -1,0 +1,43 @@
+from fastapi import APIRouter
+from backend_app.security.user_auth import create_token
+from backend_app.database.database import SessionLocal
+from backend_app.schemas.schemas import User
+from backend_app.models.users_m import UsersData
+
+router = APIRouter()
+
+@router.post("/user/register")
+def user_register(info: User):
+    db = SessionLocal()
+    user = db.query(UsersData).filter(UsersData.username == info.username).first()
+    if user:
+        return {"error": "username is taken!"}
+    
+    db_user = UsersData(fullname=info.fullname,
+                        username=info.username, 
+                        password=info.password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+
+    db.close()
+
+    return {"message": "Registered Successsfully"}
+
+@router.post("/user/login")
+def user_login(info: User):
+    db = SessionLocal()
+    db_user = db.query(UsersData).filter(
+        UsersData.username == info.username,
+        UsersData.password == info.password).first()
+    db.close()
+    if db_user:
+        #if not db_user.is_verified:
+        #  return {"error":"user not verifed"}
+        token = create_token({"user":info.username})
+
+        return {"acces token":token}
+    
+    return {"error":"Invalid username or password!"}
+
+
