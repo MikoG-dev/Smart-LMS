@@ -13,7 +13,6 @@ app.include_router(admins.router)
 app.include_router(admin.router)
 app.include_router(users.router)
 
-db = SessionLocal()
 courses = [
     Courses(title="Mathematics", year_level=9),
     Courses(title="Physics", year_level=9),
@@ -33,6 +32,3 @@ courses = [
     Courses(title="Chemistry", year_level=12),
     Courses(title="Biology", year_level=12),
 ]
-
-db.add_all(courses)
-db.commit()

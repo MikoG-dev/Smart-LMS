@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend_app.security.user_auth import create_token
+from backend_app.security.admin_auth import create_token
 router = APIRouter()
 
 @router.post("/admin/login")

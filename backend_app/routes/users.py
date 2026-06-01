@@ -1,14 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 from backend_app.security.user_auth import create_token
-from backend_app.database.database import SessionLocal
+from backend_app.database.database import init_db
 from backend_app.schemas.schemas import User
 from backend_app.models.users_m import UsersData
 
 router = APIRouter()
 
 @router.post("/user/register")
-def user_register(info: User):
-    db = SessionLocal()
+def user_register(info: User, db: Session=Depends(init_db)):
+    
     user = db.query(UsersData).filter(UsersData.username == info.username).first()
     if user:
         return {"error": "username is taken!"}
@@ -20,20 +21,16 @@ def user_register(info: User):
     db.commit()
     db.refresh(db_user)
 
-    db.close()
-
     return {"message": "Registered Successsfully"}
 
 @router.post("/user/login")
-def user_login(info: User):
-    db = SessionLocal()
+def user_login(info: User, db: Session=Depends(init_db)):
+    
     db_user = db.query(UsersData).filter(
         UsersData.username == info.username,
         UsersData.password == info.password).first()
-    db.close()
+    
     if db_user:
-        #if not db_user.is_verified:
-        #  return {"error":"user not verifed"}
         token = create_token({"user":info.username})
 
         return {"acces token":token}

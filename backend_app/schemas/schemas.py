@@ -8,8 +8,8 @@ class Choice(BaseModel):
     is_correct: bool = False
 
 class QuestionCreate(BaseModel):
-    course_title: str
-    year_level: int
+    course_title: str = 'Physics'
+    year_level: int = 9
     question: str
     choices: List[Choice]
 

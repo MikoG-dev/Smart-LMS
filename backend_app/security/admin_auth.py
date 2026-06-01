@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-SECRET_KEY = "myadminskey"
+SECRET_KEY = "maadminskey"
 ALGORITHM = "HS256"
 # ----- create token -----
 def create_token(data: dict):
     tobe_encode = data.copy()
 
-    expire = datetime.utcnow() + timedelta(minutes=10)
+    expire = datetime.utcnow() + timedelta(minutes=30)
     tobe_encode.update({"exp":expire})
 
     token = jwt.encode(tobe_encode, SECRET_KEY, algorithm=ALGORITHM)

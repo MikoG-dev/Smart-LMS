@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 from backend_app.schemas.schemas import QuestionCreate
-from backend_app.database.database import SessionLocal
+from backend_app.database.database import init_db
 from backend_app.models.questions_m import QuestionDB, ChoiceDB
 from backend_app.models.users_m import UsersData
 from backend_app.security.user_auth import current_user
@@ -10,9 +11,8 @@ from backend_app.models.coursess import Courses
 router = APIRouter()
 
 @router.post("/questions/add-question")
-def add_question(q: QuestionCreate, user=Depends(current_user)):
-    db = SessionLocal()
-
+def add_question(q: QuestionCreate, user=Depends(current_user), db: Session=Depends(init_db)):
+ 
     course = db.query(Courses).filter(Courses.title == q.course_title, Courses.year_level== q.year_level).first()
     if not course:
         return {"error":"Course not found!"}
@@ -38,36 +38,25 @@ def add_question(q: QuestionCreate, user=Depends(current_user)):
         db.add(db_choice)
 
     db.commit()
-    db.close()
 
     return {"message":"Question added successfully!"}
 
 @router.get("/questions/get-questions")
-def get_questions(user=Depends(current_user)):
-    db = SessionLocal()
+def get_questions(year_level = 9, course = '', user=Depends(current_user), db: Session=Depends(init_db)):
 
-    questions = db.query(QuestionDB).all()
+    questions = db.query(QuestionDB).filter( QuestionDB.status == 'approved', 
+                                            QuestionDB.year_level == year_level ,
+                                            QuestionDB.course_title == course.capitalize() if course != '' else True
+                                            ).all()
 
     result = []
 
     for question in questions:
         result.append({
-        #   "Id": question.id,
-            "c_title":question.course_title,
-            "year":question.year_level,
             "Question": question.question,
-            "c_code":question.courses.id,
-            "contri":question.contributor_id,
-            "Status":question.status,
-            "Choices": [
-                {
-        #           "id": c.id,
-                    "Choice": c.choice_text,
-        #           "Is_Answer": c.is_answer
-                }
-                for c in question.choices
-            ]
+            "Choices": [{"Choice": c.choice_text} for c in question.choices]
         })
     
-    db.close()
+    if result == []:
+        return {'msg': 'No questions'}
     return result
