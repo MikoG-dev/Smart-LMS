@@ -5,7 +5,7 @@ from ..schemas.schemas import QuestionCreate
 from ..database.database import init_db
 from ..models.questions_m import QuestionDB, ChoiceDB
 from ..models.users_m import UsersData
-from ..security.user_auth1 import current_user
+from ..security.user_auth2 import current_user
 from ..models.coursess import Courses
 
 

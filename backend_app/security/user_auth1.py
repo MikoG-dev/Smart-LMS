@@ -1,7 +1,7 @@
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer
 from ..models.users_m import UsersData
 from ..database.database import init_db
 from sqlalchemy.orm import Session

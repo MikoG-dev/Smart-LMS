@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm as opr
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from ..security.user_auth1 import create_token, current_user
+from ..security.user_auth2 import create_token, current_user
 from ..database.database import init_db
 from ..schemas.schemas import User, changePd
 from ..models.users_m import UsersData
@@ -54,7 +54,7 @@ def user_login(info: opr=Depends(), db: Session=Depends(init_db)):
 
 @router.post('/change-pwd')
 def change_pd(req:changePd, user=Depends(current_user), db: Session=Depends(init_db)):
-    
+
     if pwdVerify(req.current_pd, user.password):
         user.password = hashed(req.new_pd)
         db.commit()
