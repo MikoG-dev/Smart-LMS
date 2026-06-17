@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from ..database.database import init_db
 from ..models.questions_m import QuestionDB
 from ..models.users_m import UsersData
-from ..security.user_auth1 import current_admin
+from ..security.user_auth2 import current_admin
 from ..schemas.schemas import showUsers
 from typing import List
 
@@ -126,4 +126,3 @@ def remove_user(user_id:int, user=Depends(current_admin), db: Session=Depends(in
         
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="User can't be removed!")
-    

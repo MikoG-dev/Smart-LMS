@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from ..database.database import init_db
 from ..models.users_m import UsersData
 from ..schemas.schemas import Role
-from ..security.user_auth1 import current_manager
+from ..security.user_auth2 import current_manager
 
 router = APIRouter(
     prefix='/manager',
