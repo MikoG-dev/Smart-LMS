@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-
+from sqlalchemy import Enum
 
 # ---- input models -----
 class Choice(BaseModel):
@@ -18,6 +18,25 @@ class User(BaseModel):
     username: str
     password: str
 
+class UserL(BaseModel):
+    username: str='user1'
+    password: str='user'
+
+class showUsers(BaseModel):
+    id: int
+    fullname: str
+    username: str
+    role: str
+    class config:
+        orm_mode=True
+
+class changePd(BaseModel):
+    current_pd: str
+    new_pd: str
+
 class Course(BaseModel):
     tit: str
     year_l: int
+
+class Role(BaseModel):
+    role:str='user'

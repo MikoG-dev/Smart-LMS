@@ -1,17 +1,19 @@
 from fastapi import FastAPI
-from backend_app.database.database import Base, engine
-from backend_app.routes import questions, admin, admins, users
-from backend_app.models.coursess import Courses
-from backend_app.database.database import SessionLocal
-
+from .database.database import Base, engine
+from .routes import questions, admins, users, managers
+from .models.coursess import Courses
+from .database.database import SessionLocal
+from .models.users_m import UsersData
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 app.include_router(questions.router)
 app.include_router(admins.router)
-app.include_router(admin.router)
+app.include_router(managers.router)
 app.include_router(users.router)
+
+#UsersData.__table__.drop(engine)
 
 courses = [
     Courses(title="Mathematics", year_level=9),
